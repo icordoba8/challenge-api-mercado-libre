@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express";
 import axios from "axios";
-import { Item } from '../types';
+import { Autor,Item } from '../types';
 import {Utils} from '../libs'
 const router = express.Router();
 const { API }: any = process.env;
 
 router.get("/items", async (req: Request, res: Response) => {
-    const autor = Utils.getAutor(req.cookies);
+    const autor:Autor = Utils.getAutor(req.cookies);
     try {
         const { search } = req.query;
         const { data } = await axios.get(`${API}/sites/MLA/search?q=${search}`);
@@ -16,7 +16,6 @@ router.get("/items", async (req: Request, res: Response) => {
             .map( (item: any) => {
                 const price =  Utils.row(item.prices.prices);
                 return {
-                    autor:autor,
                     id: item.id,
                     title: item.title,
                     price: {
@@ -30,6 +29,7 @@ router.get("/items", async (req: Request, res: Response) => {
                 }
             })
         res.json({
+            autor:autor,
             categies: categies,
             items:items
         });
@@ -40,11 +40,11 @@ router.get("/items", async (req: Request, res: Response) => {
 });
 
 router.get("/items/:id", async (req: Request, res: Response) => {
-    const autor = Utils.getAutor(req.cookies);
+    const autor:Autor = Utils.getAutor(req.cookies);
     try {
         const { id } = req.params;
         const { data } = await axios.get(`${API}/items/${id}`);
-        const {data:detaill} = await axios.get(`${API}/items/${id}/description`);
+        const { data: detaill } = await axios.get(`${API}/items/${id}/description`);
         const item: Item = {
            autor:autor,
             id: data.id,
@@ -54,7 +54,7 @@ router.get("/items/:id", async (req: Request, res: Response) => {
                 amount:  data.price,
                 decimals:0
             },
-            picture: data.thumbnail,
+            picture: Utils.row(data.pictures).url,
             condition: data.condition,
             free_shipping: data.shipping.free_shipping,
             sold_quantity: data.sold_quantity,

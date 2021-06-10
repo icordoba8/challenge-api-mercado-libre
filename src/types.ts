@@ -12,7 +12,7 @@ interface Price {
 
 
 interface Item {
-    autor:Autor,
+    autor?:Autor,
     id: string,
     title: string,
     price: Price,
