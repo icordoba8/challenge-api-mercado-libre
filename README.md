@@ -7,7 +7,7 @@ A continuación, tenemos una secuencia de solicitud que utilizará la API
 
 ```
 npm i
-
+```
 # Iniciar el servidor en modo desarrollo
 
 ```
