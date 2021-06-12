@@ -2,6 +2,12 @@
 
 A continuación, tenemos una secuencia de solicitud que utilizará la API
 
+
+# Instalar dependencias del proyecto
+
+```
+npm i
+
 # Iniciar el servidor en modo desarrollo
 
 ```
