@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 8080;
 app.use("/api", apiRouter);
 
 app.listen(PORT, () => {
-  console.log(`server started at http://localhost:${PORT}`);
+  //console.log(`server started at http://localhost:${PORT}`);
 });
 
 export default app;

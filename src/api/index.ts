@@ -6,12 +6,14 @@ const router = express.Router();
 const { API }: any = process.env;
 
 router.get("/items", async (req: Request, res: Response) => {
+
     const autor:Autor = Utils.getAutor(req.cookies);
     try {
         const { search } = req.query;
         const { data } = await axios.get(`${API}/sites/MLA/search?q=${search}`);
+        
         const { results, filters } = data
-        const categies: Array<string> = await Utils.getCategorys(filters)
+        const categories: Array<string> = await Utils.getCategorys(filters)
         const items: Array<Item> = results.filter((item: object, index: number) => index <= 4)
             .map( (item: any) => {
                 const price =  Utils.row(item.prices.prices);
@@ -30,11 +32,12 @@ router.get("/items", async (req: Request, res: Response) => {
             })
         res.json({
             autor:autor,
-            categies: categies,
+            categories: categories,
             items:items
         });
         
-  } catch (error) {
+    } catch (error) {
+        console.log(error)
     res.json({ name: "error", message: "Error procesando datos" });
   }
 });
@@ -45,6 +48,8 @@ router.get("/items/:id", async (req: Request, res: Response) => {
         const { id } = req.params;
         const { data } = await axios.get(`${API}/items/${id}`);
         const { data: detaill } = await axios.get(`${API}/items/${id}/description`);
+        const { data: categoty } = await axios.get(`${API}/categories/${data.category_id}`);
+        
         const item: Item = {
            autor:autor,
             id: data.id,
@@ -60,8 +65,8 @@ router.get("/items/:id", async (req: Request, res: Response) => {
             sold_quantity: data.sold_quantity,
             description:detaill.plain_text
         }
-      res.json(item);
-  } catch (error) {
+        res.json({ item:item,categories:[categoty.name]});
+    } catch (error) {
     res.json({ name: "error", message: "Error procesando datos" });
   }
 });
